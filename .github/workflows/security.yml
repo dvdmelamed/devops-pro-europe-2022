@@ -17,7 +17,7 @@ jobs:
         python -m pip install bandit
     - name: run bandit
       run: |
-        bandit -r *.py -n 3 -f json -o ${{ github.workspace}}/bandit-report.json || true
+        bandit -r *.py -n 3 -f json -o ${{ github.workspace}}/devops-bandit-report.json || true
     - uses: actions/upload-artifact@v2
       with:
         name: bandit
@@ -36,11 +36,11 @@ jobs:
         ACTIONS_ALLOW_UNSECURE_COMMANDS: 'true'
     - name: write report
       run: |
-        echo $GITLEAKS_RESULT > gitleaks-report.json
+        echo $GITLEAKS_RESULT > devops-gitleaks-report.json
     - uses: actions/upload-artifact@v2
       with:
         name: gitleaks
-        path: gitleaks-report.json
+        path: devops-gitleaks-report.json
 
   sca:
     name: dependency-check
@@ -67,6 +67,7 @@ jobs:
           source ./venv/bin/activate .
           pip install -r requirements.txt
       - name: Cache Dependency Check DB
+        if: ${{ !env.ACT }}
         uses: actions/cache@v2
         with:
           path: ~/.local/dependency-check/
@@ -152,11 +153,11 @@ jobs:
 
       - name: print sast report
         run: |
-          cat ${{ github.workspace}}/bandit-report.json
+          cat ${{ github.workspace}}/devops-bandit-report.json
 
       - id: test-sast-policy
         run: |
-          conftest test ${{ github.workspace}}/bandit-report.json -n sast
+          conftest test ${{ github.workspace}}/devops-bandit-report.json -n sast
 
       - id : check-sast-policy-exit-code
         run: exit ${{ steps.test-sast-policy.outputs.exitcode }}
@@ -167,11 +168,11 @@ jobs:
 
       - name: print secrets report
         run: |
-          cat ${{ github.workspace}}/gitleaks-report.json
+          cat ${{ github.workspace}}/devops-gitleaks-report.json
 
       - id: test-secrets-policy
         run: |
-          conftest test ${{ github.workspace}}/gitleaks-report.json -n secrets
+          conftest test ${{ github.workspace}}/devops-gitleaks-report.json -n secrets
 
       - id : check-secrets-policy-exit-code
         run: exit ${{ steps.test-secrets-policy.outputs.exitcode }}

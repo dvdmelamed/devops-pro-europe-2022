@@ -26,7 +26,7 @@ resources: 11
 api keys:
   None
 endpoints:
-  http://localhost:4566/restapis/8m3g5k99q8/local/_user_request_
+  http://localhost:4566/restapis/<API ID>/local/_user_request_
 functions:
   currentTime: http-endpoint-local-currentTime
 layers:
@@ -35,17 +35,17 @@ layers:
 
 To test the endpoint, use: 
 ```
-curl http://localhost:4566/restapis/8m3g5k99q8/local/_user_request_/ping
+curl http://localhost:4566/restapis/<API ID>/local/_user_request_/ping
 ```
 
 or with a different timezone:
 ```
-curl  "http://localhost:4566/restapis/8m3g5k99q8/local/_user_request_/ping?tz=Europe%2FLondon"
+curl  "http://localhost:4566/restapis/<API ID>/local/_user_request_/ping?tz=Europe%2FLondon"
 ```
 
 To run the Github workflow locally, install `act` using `brew install act` and run the workflow using:
 ```
-act --artifact-server-path /tmp/ga-artifacts --artifact-server-port 34567 --bind --container-architecture linux/amd64 -j policy-eval -P ubuntu-latest=nektos/act-environments-ubuntu:18.04
+act --artifact-server-path /tmp/ga-artifacts --reuse --artifact-server-port 34567 --bind --container-architecture linux/amd64 -j policy-eval -P ubuntu-latest=nektos/act-environments-ubuntu:18.04
 ```
 
 You should see at the end the following output:
