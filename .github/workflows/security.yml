@@ -21,7 +21,7 @@ jobs:
     - uses: actions/upload-artifact@v2
       with:
         name: bandit
-        path: ${{ github.workspace}}/bandit-report.json
+        path: ${{ github.workspace}}/devops-bandit-report.json
 
   secrets:
     name: secret-detection
@@ -31,7 +31,7 @@ jobs:
     - name: gitleaks
       uses: dvdmelamed/gitleaks-action@master
       with:
-        report-path: gitleaks-report.json
+        report-path: devops-gitleaks-report.json
       env:
         ACTIONS_ALLOW_UNSECURE_COMMANDS: 'true'
     - name: write report
